@@ -1,39 +1,35 @@
 window.onload = function() {
-	/* variables
-	shipSide	- размер палубы
-	user.field 	- игровое поле пользователя
-	comp.field 	- игровое поле компьютера
-	user.fieldX,
-	user.fieldY	- координаты игрового поля пользователя
-	comp.fieldX,
-	comp.fieldY	- координаты игрового поля компьютера
+    /* variables
+    shipSide	- размер палубы
+    user.field 	- игровое поле пользователя
+    comp.field 	- игровое поле компьютера
+    user.fieldX,
+    user.fieldY	- координаты игрового поля пользователя
+    comp.fieldX,
+    comp.fieldY	- координаты игрового поля компьютера
 
-	0 - пустое место
-	1 - палуба корабля
-	2 - клетка рядом с кораблём
-	3 - обстрелянная клетка
-	4 - попадание в палубу
-	*/
+    0 - пустое место
+    1 - палуба корабля
+    2 - клетка рядом с кораблём
+    3 - обстрелянная клетка
+    4 - попадание в палубу
+    */
 
 	'use strict';
 		//создаю переменную для хранения имени
-	var playerName = prompt('Напишите ваше имя: ');
-		// небольшая проверочка:)
+    let playerName = prompt('Напишите ваше имя: ');
+    	// небольшая проверочка:)
 	while (playerName == null){
 		alert('Ну и зачем так делать?');
-		var playerName = prompt('Напишите ваше имя: ');
-	}
+        playerName = prompt('Напишите ваше имя: ');
+    }
 
 	function Field(field) {
 		// размер стороны игрового поля в px
 		this.fieldSide	= 330,
 		// размер палубы корабля в px
 		this.shipSize	= 33,
-		// массив с данными кораблей
-		// в качестве его элементов выступают массивы содержащие количество палуб и тип кораблей
-		// индекс элемента массива будет соответствовать количеству кораблей, данные о которых
-		// содержатся в данном элементе
-		// чтобы описанная структура была корректной, используем пустой нулевой элемент
+		// массив с данными кораблей, пустой элемент для 0 индекса
 		this.shipsData	= [
 			'',
 			[4, 'fourdeck'],
@@ -62,12 +58,6 @@ window.onload = function() {
 
 		for (var i = 1, length = this.shipsData.length; i < length; i++) {
 			// i равно количеству кораблей, создаваемых для типа корабля в данной итерации
-			// ещё раз напомню на примере:
-			// элемент [3, 'tripledeck'] имеет индекс 2 в массиве shipsData, значит
-			// должно быть два трёхпалубных корабля
-			// индекс элемента [2, 'doubledeck'] равен 3, значит должно быть создано
-			// три двухпалубных корабля
-			// и так по каждому элементу массива
 
 			// количество палуб у текущего типа кораблей
 			var decks = this.shipsData[i][0]; // кол-во палуб
@@ -105,12 +95,10 @@ window.onload = function() {
 			x = getRandom(10 - decks);
 			y = getRandom(9);
 		}
-
-		// проверяем валидность координат всех палуб корабля:
 		// нет ли в полученных координатах или соседних клетках ранее
 		// созданных кораблей
 		var result = this.checkLocationShip(x, y, kx, ky, decks);
-		// если координаты невалидны, снова запускаем функцию
+		// если координаты неправельны, снова запускаем функцию
 		if (!result) return this.getCoordinatesDecks(decks);
 
 		// создаём объект, свойствами которого будут начальные координаты и
@@ -130,9 +118,6 @@ window.onload = function() {
 
 		// формируем индексы начала и конца цикла для строк
 		// если координата 'x' равна нулю, то это значит, что палуба расположена в самой верхней строке,
-		// т. е. примыкает к верхней границе и началом цикла будет строка с индексом 0
-		// в противном случае, нужно начать проверку со строки с индексом на единицу меньшим, чем у
-		// исходной, т.е. находящейся выше исходной строки
 		fromX = (x == 0) ? x : x - 1;
 		// если условие истинно - это значит, что корабль расположен вертикально и его последняя палуба примыкает
 		// к нижней границе игрового поля
@@ -176,7 +161,7 @@ window.onload = function() {
 			// получаем коллекцию все кораблей, которые нужно удалить
 			divs 	= document.querySelectorAll('#' + id + ' > div');
 
-		// перебираем в цикле полученную коллекцию и удаляем входящие в неё корабли
+		// удаляем входящие в коллекцию корабли
 		[].forEach.call(divs, function(el) {
 			parent.removeChild(el);
 		});
@@ -186,8 +171,8 @@ window.onload = function() {
 
 	// зарегистрируем переменные и присвои им значения полученных элементов игровых полей
 	// эти переменные ещё несколько раз понадобятся нам при написании скрипта
-	var userfield = getElement('field_user'),
-		compfield = getElement('field_comp'),
+	var userField = getElement('field_user'),
+		compField = getElement('field_comp'),
 		comp;
 	// с помощью конструктора создаём объект user, за его основу взято поле игрока
 	var user = new Field(getElement('field_user'));
@@ -226,14 +211,6 @@ window.onload = function() {
 		// количество циклов будет равно количеству палуб создаваемого корабля
 		while (k < decks) {
 			// записываем координаты корабля в матрицу игрового поля
-			// теперь наглядно должно быть видно зачем мы создавали два
-			// коэфициента направления палуб
-			// если коэфициент равен 1, то соотвествующая координата будет
-			// увеличиваться при каждой итерации
-			// если равен нулю, то координата будет оставаться неизменной
-			// таким способом мы очень сократили и унифицировали код
-			// значение 1, записанное в ячейку двумерного массива, говорит о том, что
-			// по данным координатам находится палуба некого корабля
 			player.matrix[x + k * kx][y + k * ky] = 1;
 			// записываем координаты корабля в матрицу экземпляра корабля
 			this.matrix.push([x + k * kx, y + k * ky]);
@@ -244,8 +221,7 @@ window.onload = function() {
 		player.squadron.push(this);
 		// если корабль создан для игрока, выводим его на экран
 		if (player == user) this.showShip();
-		// когда количество кораблей в эскадре достигнет 10, т.е. все корабли
-		// сгенерированны, то можно показать кнопку запуска игры
+		// когда все корабли сгенерированны, можно показать кнопку запуска игры
 		if (user.squadron.length == 10) {
 			getElement('play').setAttribute('data-hidden', 'false');
 		}
@@ -393,19 +369,19 @@ window.onload = function() {
 			if (result) {
 				// клон находится в пределах игрового поля, поэтому
 				// подсвечиваем его контур зелёным цветом
-				this.clone.classList.remove('unsuccess');
+				this.clone.classList.remove('failure');
 				this.clone.classList.add('success');
 			} else {
 				// в соседних клетках находятся ранее установленные корабли,
 				// поэтому контур клона подсвечен красным цветом
 				this.clone.classList.remove('success');
-				this.clone.classList.add('unsuccess');
+				this.clone.classList.add('failure');
 			}
 		} else {
 			// клон за пределами игрового поля, поэтому его контур
 			// подсвечен красным цветом
 			this.clone.classList.remove('success');
-			this.clone.classList.add('unsuccess');
+			this.clone.classList.add('failure');
 		}
 		return false;
 	}
@@ -417,9 +393,9 @@ window.onload = function() {
 		if (!this.clone) return;
 
 		// попытка поставить корабль вне игрового поля или в нарушении правил
-		if (this.clone.classList.contains('unsuccess')) {
+		if (this.clone.classList.contains('failure')) {
 			// удаляем класс подсвечивающий контур корабля красным цветом
-			this.clone.classList.remove('unsuccess');
+			this.clone.classList.remove('failure');
 			// возвращаем корабль в исходную позицию из которой было начато перемещение
 			this.clone.rollback();
 
@@ -570,9 +546,9 @@ window.onload = function() {
 						ky	= (ky == 0) ? 1 : 0;
 
 					var el = getElement(ship.shipname);
-					el.classList.add('unsuccess');
+					el.classList.add('failure');
 					setTimeout(function() {
-						el.classList.remove('unsuccess');
+						el.classList.remove('failure');
 					}, 500);
 				}
 				// создаём экземпляр корабля
@@ -653,11 +629,10 @@ window.onload = function() {
 		var type = el.getAttribute('data-target'),
 			// создаём литеральный объект typeGeneration
 			// каждому свойству литерального объекта соотвествует анонимная функция
-			// в которой вызывается рандомная или ручная расстановка кораблей
+			// в которой вызывается расстановка кораблей
 			typeGeneration = {
 				'random': function() {
-					// если мы хотели самостоятельно расставить корабли, а потом решили
-					// сделать это рандомно, то скрываем корабали для перетаскивания
+					// скрываем корабали для перетаскивания
 					shipsCollection.setAttribute('data-hidden', true);
 					user.randomLocationShips();
 				},
@@ -690,22 +665,22 @@ window.onload = function() {
 	});
 
 	getElement('play').addEventListener('click', function(e) {
-		// скрываем блок инструкции и выбора способа расстановки кораблей
+		// скрываем блок инструкции расстановки кораблей
 		getElement('instruction').setAttribute('data-hidden', true);
 
 		// показываем поле компьютера, создаём объект поля компьютера и расставляем корабли
 		document.querySelector('.field-comp').setAttribute('data-hidden', false);
-		comp = new Field(compfield);
+		comp = new Field(compField);
 		comp.randomLocationShips();
 
 		// скрываем кнопку запуска игры
 		getElement('play').setAttribute('data-hidden', true);
 		// выводим сообщение над игровыми полями
-		getElement('text_top').innerHTML = 'Морской бой между эскадрами';
+		getElement('text_top').innerHTML = 'Игра началась!';
 
 		// удаляем события с поля игрока (отмена редактирования расстановки кораблей)
-		userfield.removeEventListener('mousedown', user.onMouseDown);
-		userfield.addEventListener('contextmenu', function(e) {
+		userField.removeEventListener('mousedown', user.onMouseDown);
+		userField.addEventListener('contextmenu', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
 			return false;
@@ -746,7 +721,7 @@ window.onload = function() {
 					[ [3,0], [7,0], [9,2], [9,6] ]
 				];
 
-				// создаём временный объект корабля 'tempShip' куда будем заносить
+				// создаём временный объект 'tempShip' куда будем заносить
 				// координаты попаданий, расположение корабля, количество попаданий
 				self.resetTempShip();
 
@@ -758,11 +733,9 @@ window.onload = function() {
 				// первым стреляет человек
 				if (player === user) {
 					// устанавливаем на игровое поле компьютера обработчики событий
-					// регистрируем обработчик выстрела
-					compfield.addEventListener('click', self.shoot);
-					// регистрируем обработчик визуальной отметки клеток, в которых
-					// однозначно не может быть кораблей противника
-					compfield.addEventListener('contextmenu', self.setEmptyCell);
+					compField.addEventListener('click', self.shoot);
+					// обработчик визуальной отметки клеток, в которых
+					compField.addEventListener('contextmenu', self.setEmptyCell);
 					// выводим сообщение о том, что первый выстрел за пользователем
 					self.showServiseText(playerName + ' вы стреляете первым.');
 				} else {
@@ -808,8 +781,8 @@ window.onload = function() {
 
 						if (player == comp) {
 							// снимаем обработчики событий для пользователя
-							compfield.removeEventListener('click', self.shoot);
-							compfield.removeEventListener('contextmenu', self.setEmptyCell);
+							compField.removeEventListener('click', self.shoot);
+							compField.removeEventListener('contextmenu', self.setEmptyCell);
 
 							// если в массиве нет координат, сбрасываем объект к исходным значениям
 							if (comp.shootMatrixAround.length == 0) {
@@ -822,8 +795,8 @@ window.onload = function() {
 							}, 1000);
 						} else {
 							// устанавливаем обработчики событий для пользователя
-							compfield.addEventListener('click', self.shoot);
-							compfield.addEventListener('contextmenu', self.setEmptyCell);
+							compField.addEventListener('click', self.shoot);
+							compField.addEventListener('contextmenu', self.setEmptyCell);
 						}
 						break;
 
@@ -841,13 +814,13 @@ window.onload = function() {
 						// при возможном удалении его элементов
 						for (var i = enemy.squadron.length - 1; i >= 0; i--) {
 							var warship		= enemy.squadron[i], // вся информация о корабле эскадры
-								arrayDescks	= warship.matrix; // массив с координатами палуб корабля
+								arrayDecks	= warship.matrix; // массив с координатами палуб корабля
 
 							// перебираем координаты палуб корабля
-							for (var j = 0, length = arrayDescks.length; j < length; j++) {
+							for (var j = 0, length = arrayDecks.length; j < length; j++) {
 								// если координаты одной из палуб корабля совпали с координатами выстрела
 								// увеличиванием счётчик попаданий
-								if (arrayDescks[j][0] == coords.x && arrayDescks[j][1] == coords.y) {
+								if (arrayDecks[j][0] == coords.x && arrayDecks[j][1] == coords.y) {
 									warship.hits++;
 
 									// если кол-во попаданий в корабль становится равным кол-ву палуб
@@ -870,15 +843,15 @@ window.onload = function() {
 
 						// игра закончена, все корабли эскадры противника уничтожены
 						if (enemy.squadron.length == 0) {
-							text = (player === user) ? 'Поздравляем! Вы выиграли.' : 'К сожалению, вы проиграли.';
+							text = (player === user) ? 'Поздравляем ' + playerName + '! Вы выиграли.' : 'К сожалению ' + playerName + ', вы проиграли.';
 							//text += ' Хотите продолжить игру?';
 							srvText.innerHTML = text;
 
 							// победа игрока
 							if (player == user) {
 								// снимаем обработчики событий для пользователя
-								compfield.removeEventListener('click', self.shoot);
-								compfield.removeEventListener('contextmenu', self.setEmptyCell);
+								compField.removeEventListener('click', self.shoot);
+								compField.removeEventListener('contextmenu', self.setEmptyCell);
 							// победа компьютера
 							} else {
 								// если выиграл комп., показываем оставшиеся корабли компьютера
@@ -912,7 +885,6 @@ window.onload = function() {
 
 								if (comp.tempShip.totalHits >= max) {
 									// корабль потоплен
-									// помечаем клетки вокруг корабля, как гарантированно пустые
 									if (comp.tempShip.totalHits == 1) { // однопалубный
 										points = [
 											// верхняя

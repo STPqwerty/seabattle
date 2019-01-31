@@ -44,16 +44,16 @@ p {margin-bottom: 10px;}
 
 .fourdeck {width: 134px; background-position: 0 0;}
 .fourdeck.success {background-position: 0 -50px;}
-.fourdeck.unsuccess {background-position: 0 -100px;}
+.fourdeck.failure {background-position: 0 -100px;}
 .tripledeck {width: 101px; background-position: -150px 0;}
 .tripledeck.success {background-position: -150px -50px;}
-.tripledeck.unsuccess {background-position: -150px -100px;}
+.tripledeck.failure {background-position: -150px -100px;}
 .doubledeck {width: 68px; background-position: -270px 0;}
 .doubledeck.success {background-position: -270px -50px;}
-.doubledeck.unsuccess {background-position: -270px -100px;}
+.doubledeck.failure {background-position: -270px -100px;}
 .singledeck {width: 35px; background-position: -360px 0;}
 .singledeck.success {background-position: -360px -50px;}
-.singledeck.unsuccess {background-position: -360px -100px;}
+.singledeck.failure {background-position: -360px -100px;}
 
 .instruction {margin-left: 430px; -webkit-user-select: none; user-select: none;}
 .type-placement-box {line-height: 34px; padding-bottom: 18px;}
